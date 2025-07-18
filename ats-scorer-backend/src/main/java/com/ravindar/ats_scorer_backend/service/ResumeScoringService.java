@@ -34,9 +34,11 @@ public class ResumeScoringService {
     private String sendToLLM(String resume, String jd) throws IOException, InterruptedException {
         final String API_KEY = "AIzaSyCfmcKVze0INUsFOK057pJURYGM04AhcDo";
         String model = "models/gemini-2.5-pro";
+
+        // Build the Api URL with model and API key
         String url = "https://generativelanguage.googleapis.com/v1beta/" + model + ":generateContent?key=" + API_KEY;
 
-        // Construct proper JSON body
+        // Construct  a prompt that tells the LLM what to do
         String prompt = String.format("""
             You are an ATS scorer. Score the resume out of 100 based on how well it matches the job description. Provide both the score and a brief explanation.
             
@@ -47,6 +49,7 @@ public class ResumeScoringService {
             %s
         """, jd, resume);
 
+        // Create a JSON request body with the prompt
         String requestBody = """
         {
           "contents": [
@@ -61,15 +64,18 @@ public class ResumeScoringService {
         }
         """.formatted(escapeJson(prompt));
 
+        // Build HTTP request with JSON content type
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
 
+        // Send request synchronously and get raw JSON response string
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         System.out.println("Raw LLM response: " + response.body());
 
+        // Parse and return the scored result from the response JSON
         return parseLLMResponse(response.body());
     }
 
