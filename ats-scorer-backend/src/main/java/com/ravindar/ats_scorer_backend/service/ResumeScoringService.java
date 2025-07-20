@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tika.Tika;
 import org.apache.tika.exception.TikaException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,16 @@ public class ResumeScoringService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Value("${app.api.key}")
+    private String API_KEY;
+
+    @Value("${app.model}")
+    private String model;
+
+    // Build the Api URL with model and API key
+    @Value("${app.url}")
+    private String url;
+
     public String scoreResume(MultipartFile resumeFile, MultipartFile jdFile)
             throws IOException, InterruptedException, TikaException {
         String resumeText = extractText(resumeFile);
@@ -32,11 +43,6 @@ public class ResumeScoringService {
     }
 
     private String sendToLLM(String resume, String jd) throws IOException, InterruptedException {
-        final String API_KEY = "AIzaSyCfmcKVze0INUsFOK057pJURYGM04AhcDo";
-        String model = "models/gemini-2.5-pro";
-
-        // Build the Api URL with model and API key
-        String url = "https://generativelanguage.googleapis.com/v1beta/" + model + ":generateContent?key=" + API_KEY;
 
         // Construct  a prompt that tells the LLM what to do
         String prompt = String.format("""
@@ -52,6 +58,9 @@ public class ResumeScoringService {
         // Create a JSON request body with the prompt
         String requestBody = """
         {
+          "generationConfig": {
+                      "temperature": 0
+                    },
           "contents": [
             {
               "parts": [
