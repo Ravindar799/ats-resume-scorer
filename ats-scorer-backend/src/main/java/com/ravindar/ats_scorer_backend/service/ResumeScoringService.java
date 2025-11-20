@@ -46,14 +46,29 @@ public class ResumeScoringService {
 
         // Construct  a prompt that tells the LLM what to do
         String prompt = String.format("""
-            You are an ATS scorer. Score the resume out of 100 based on how well it matches the job description. Provide both the score and a brief explanation.
-            
-            Job Description:
-            %s
+    You are an ATS (Applicant Tracking System) scorer. Evaluate how well the resume matches the job description and provide a score out of 100.
+    
+    Use the following evaluation criteria:
+    
+    1. **Keyword Match (30 points)** – Does the resume include relevant keywords and terminology from the job description?
+    2. **Skills Alignment (20 points)** – Are the candidate's skills closely aligned with those required in the job description?
+    3. **Experience Relevance (20 points)** – Does the candidate have job experience that matches the role's responsibilities?
+    4. **Education & Certifications (10 points)** – Does the candidate meet or exceed the educational and certification requirements?
+    5. **Role Fit & Industry Knowledge (10 points)** – Does the resume reflect an understanding of the role and industry?
+    6. **Achievements & Impact (10 points)** – Are the accomplishments relevant, quantified, and indicative of strong performance?
 
-            Resume:
-            %s
-        """, jd, resume);
+    Provide:
+    - A total score out of 100.
+    - A brief breakdown of the score across each category.
+    - A short explanation summarizing why the resume is a good or poor fit.
+
+    Job Description:
+    %s
+
+    Resume:
+    %s
+""", jd, resume);
+
 
         // Create a JSON request body with the prompt
         String requestBody = """

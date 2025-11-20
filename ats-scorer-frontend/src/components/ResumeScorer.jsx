@@ -61,74 +61,233 @@ const ResumeScorer = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <h2>ATS Resume Scorer</h2>
+  <div style={styles.container}>
+    <h2 style={styles.title}>ATS Resume Scorer</h2>
 
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <div>
-          <label>Upload Resume: </label>
+    <form onSubmit={handleSubmit} style={styles.form}>
+      {/* Resume Upload */}
+      <div style={styles.formGroup}>
+        <label style={styles.label}>Upload Resume</label>
+
+        <div style={styles.fileInputWrapper}>
+          <label
+            htmlFor="resume-upload"
+            style={{
+              ...styles.customFileLabel,
+              color: resumeFile ? '#28a745' : '#555',
+              flexGrow: 1,
+            }}
+          >
+            {resumeFile ? `File chosen: ${resumeFile.name}` : 'Choose file'}
+          </label>
+
+          {resumeFile && (
+            <button
+              type="button"
+              onClick={() => setResumeFile(null)}
+              style={styles.clearButton}
+              aria-label="Clear selected resume file"
+            >
+              &times;
+            </button>
+          )}
+
           <input
+            key={resumeFile ? resumeFile.name : 'resume-upload'}
+            id="resume-upload"
             type="file"
             accept=".pdf,.doc,.docx,.txt"
             onChange={(e) => setResumeFile(e.target.files[0])}
+            style={styles.hiddenFileInput}
           />
         </div>
+      </div>
 
-        <div>
-          <label>Upload Job Description: </label>
+      {/* Job Description Upload */}
+      <div style={styles.formGroup}>
+        <label style={styles.label}>Upload Job Description</label>
+
+        <div style={styles.fileInputWrapper}>
+          <label
+            htmlFor="jd-upload"
+            style={{
+              ...styles.customFileLabel,
+              color: jdFile ? '#28a745' : '#555',
+              flexGrow: 1,
+            }}
+          >
+            {jdFile ? `File chosen: ${jdFile.name}` : 'Choose file'}
+          </label>
+
+          {jdFile && (
+            <button
+              type="button"
+              onClick={() => setJdFile(null)}
+              style={styles.clearButton}
+              aria-label="Clear selected job description file"
+            >
+              &times;
+            </button>
+          )}
+
           <input
+            key={jdFile ? jdFile.name : 'jd-upload'}
+            id="jd-upload"
             type="file"
             accept=".pdf,.doc,.docx,.txt"
             onChange={(e) => setJdFile(e.target.files[0])}
+            style={styles.hiddenFileInput}
           />
         </div>
+      </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Scoring...' : 'Submit'}
-        </button>
-      </form>
+      <button type="submit" disabled={loading} style={styles.button}>
+        {loading ? 'Scoring...' : 'Submit'}
+      </button>
+    </form>
 
-      {result && (
-        <div style={styles.resultBox}>
-            <h3>LLM Score Result</h3>
-            <div>{result}</div>
-        </div>
-       )}
-      {error && <p style={styles.error}>{error}</p>}
-    </div>
-  );
+    {result && (
+      <div style={styles.resultBox}>
+        <h3 style={styles.resultTitle}>LLM Score Result</h3>
+        <div>{result}</div>
+      </div>
+    )}
+
+    {error && <p style={styles.error}>{error}</p>}
+  </div>
+);
+
 };
 
 const styles = {
   container: {
     maxWidth: '600px',
-    margin: '50px auto',
-    padding: '20px',
-    border: '1px solid #ddd',
-    borderRadius: '12px',
-    fontFamily: 'Arial, sans-serif',
+    margin: '60px auto',
+    padding: '30px',
+    border: '1px solid #e0e0e0',
+    borderRadius: '16px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+    fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+    backgroundColor: '#fff',
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: '30px',
+    color: '#333',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '15px',
-    marginBottom: '20px',
+    gap: '20px',
+  },
+  formGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  label: {
+    marginBottom: '8px',
+    fontWeight: '600',
+    color: '#444',
+  },
+  input: {
+    padding: '10px 12px',
+    borderRadius: '6px',
+    border: '1px solid #ccc',
+    fontSize: '14px',
+    backgroundColor: '#fafafa',
+    transition: 'border 0.3s',
+  },
+  button: {
+    padding: '12px',
+    borderRadius: '8px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    transition: 'background 0.3s',
   },
   resultBox: {
-  backgroundColor: '#f6f6f6',
-  padding: '15px',
-  borderRadius: '8px',
-  whiteSpace: 'pre-wrap',
-  wordWrap: 'break-word',
-  maxHeight: '400px',
-  overflowY: 'auto',
-  border: '1px solid #ccc',
-  fontSize: '14px',
-  lineHeight: '1.5',
-},
+    backgroundColor: '#f9f9f9',
+    padding: '18px',
+    borderRadius: '10px',
+    border: '1px solid #ddd',
+    whiteSpace: 'pre-wrap',
+    wordWrap: 'break-word',
+    maxHeight: '400px',
+    overflowY: 'auto',
+    fontSize: '14px',
+    lineHeight: '1.6',
+    marginTop: '25px',
+    color: '#333',
+  },
+  resultTitle: {
+    marginBottom: '10px',
+    color: '#2c3e50',
+  },
   error: {
-    color: 'red',
+    color: '#d32f2f',
+    marginTop: '15px',
+    textAlign: 'center',
+  },
+  hiddenFileInput: {
+  display: 'none',
+  },
+
+  customFileLabel: {
+    display: 'inline-block',
+    padding: '10px 15px',
+    borderRadius: '6px',
+    backgroundColor: '#e9ecef',
+    border: '1px solid #ccc',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '14px',
+    userSelect: 'none',
+    transition: 'color 0.3s ease',
+  },
+  hiddenFileInput: {
+  display: 'none',
+  },
+
+  customFileLabel: {
+    display: 'inline-block',
+    padding: '10px 15px',
+    borderRadius: '6px',
+    backgroundColor: '#e9ecef',
+    border: '1px solid #ccc',
+    cursor: 'pointer',
+    fontWeight: '600',
+    fontSize: '14px',
+    userSelect: 'none',
+    transition: 'color 0.3s ease',
+  },
+
+  fileInputWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
+
+  clearButton: {
+    background: '#dc3545', // red color
+    color: '#fff',
+    border: 'none',
+    borderRadius: '50%',
+    width: '24px',
+    height: '24px',
+    cursor: 'pointer',
+    fontSize: '18px',
+    lineHeight: '18px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '0',
+    userSelect: 'none',
+    transition: 'background-color 0.3s',
   },
 };
+
 
 export default ResumeScorer;
