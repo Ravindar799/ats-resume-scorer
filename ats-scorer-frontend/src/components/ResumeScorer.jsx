@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from "axios";
 
 const ResumeScorer = () => {
   const [resumeFile, setResumeFile] = useState(null);
@@ -230,22 +230,6 @@ const styles = {
     color: '#d32f2f',
     marginTop: '15px',
     textAlign: 'center',
-  },
-  hiddenFileInput: {
-  display: 'none',
-  },
-
-  customFileLabel: {
-    display: 'inline-block',
-    padding: '10px 15px',
-    borderRadius: '6px',
-    backgroundColor: '#e9ecef',
-    border: '1px solid #ccc',
-    cursor: 'pointer',
-    fontWeight: '600',
-    fontSize: '14px',
-    userSelect: 'none',
-    transition: 'color 0.3s ease',
   },
   hiddenFileInput: {
   display: 'none',
